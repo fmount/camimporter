@@ -1,0 +1,16 @@
+{
+	"globals": {
+		"ingress": "~/Pictures",
+        "egress": "~/Pictures/mytest",
+        "deep": "month"
+	},
+	"statistics": {
+		"header": [
+				"transferred",
+				"skipped",
+				"blacklisted",
+				"failed",
+				"total"
+		]
+	}
+}

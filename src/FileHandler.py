@@ -11,6 +11,7 @@ import logging
 import shutil
 from ImageHandler import ImageHandler as ImageObject
 from utils.ConsoleUtils import ANSIColors as colorize
+from utils.Stats import Stats
 from prettytable import PrettyTable
 from collections import defaultdict
 
@@ -20,13 +21,13 @@ LOG = logging.getLogger(__name__)
 
 cc = colorize()
 
-data = ["transferred", "skipped", "blacklisted", "total"]
+#data = ["transferred", "skipped", "blacklisted", "failed", "total"]
 
 
 class FileHandler(object):
 	
 
-	def __init__(self, ingress, egress):
+	def __init__(self, ingress, egress, deep, data):
 	
 		try:
 			if(os.path.exists(ingress)):
@@ -41,21 +42,15 @@ class FileHandler(object):
 			sys.exit(-1)
 
 		self.egress = egress
-		self.statistics = {}
 		self.blacklist = []
-
+		self.deep = deep
 		if self.isinside(self.ingress, self.egress):
 			self.blacklist.append(self.egress)
 		
-		self.init_stats_data()
+		self.statistics = Stats(data)
 		LOG.debug("[FileHandler] |/ Defining base output mountpoint as [%s] " % self.egress)
 		cc.s_success("[FileHandler] |/ Defining base output mountpoint as [%s] " % self.egress)
 	
-
-	def init_stats_data(self):
-		for key in data:
-			self.statistics[key] = 0
-
 
 	def isinside(self, path, directory):
 		path = os.path.realpath(path)
@@ -66,11 +61,11 @@ class FileHandler(object):
 
 	def flist(self):
 		
-		tlist = [root + os.sep + fname  \
+		tlist = [root + os.sep + fname	\
 		for root, innerdirs, filelist in os.walk(self.ingress, topdown=True)\
 		for fname in filelist]
 		
-		self.statistics['total'] = len(tlist)
+		self.statistics.total = len(tlist)
 		return tlist
 		
 
@@ -90,12 +85,17 @@ class FileHandler(object):
 			if not os.path.exists(self.egress + dpath + data):
 				LOG.debug("[FileHandler] |/ [%s] => [%s]" % (data, self.egress + dpath))
 				cc.s_success("[FileHandler] ", " |/ [%s] => [%s]" % (data, self.egress + dpath))
-				shutil.copy2(data, self.egress + dpath)
-				self.statistics['transferred'] += 1
+				try:
+					shutil.copy2(data, self.egress + dpath)
+					self.statistics.transferred += 1
+				except Exception:
+					LOG.s_error("[FileHandler] |x Error transferring [%s] " % (self.egress + dpath + data))
+					cc.s_error("[FileHandler] |x Error transferring [%s] " % (self.egress + dpath + data))
+					self.statistics.failed += 1
 			else:
 				LOG.warning("[FileHandler] |x Skipping [%s]: File exists" % (self.egress + dpath + data))
 				cc.s_warning("[FileHandler] |x Skipping [%s]: File exists" % (self.egress + dpath + data))
-				self.statistics['skipped'] += 1
+				self.statistics.skipped += 1
 
 		except Exception as e:
 			cc.errors(e)
@@ -104,7 +104,7 @@ class FileHandler(object):
 	def blacklisted(self, img):
 		for p in self.blacklist:
 			if img.startswith(os.path.abspath(p)):
-				self.statistics['blacklisted'] += 1
+				self.statistics.blacklisted += 1
 				return True
 		return False
 		
@@ -115,19 +115,21 @@ class FileHandler(object):
 		It generates a prettytable containing the
 		stats about the imported images
 		'''
-		x = PrettyTable(['Total Images', 'Transferred', 'Skipped', 'blacklisted'])
-		x.add_row([self.statistics['total'], self.statistics.get("transferred", 0), \
-		self.statistics.get("skipped", 0), self.statistics.get("blacklisted", 0)])
+		#x = PrettyTable(['Total Images', 'Transferred', 'Skipped', 'blacklisted'])
+		x = PrettyTable(self.statistics.get_header())
+		x.add_row([self.statistics.transferred, \
+		self.statistics.skipped, self.statistics.blacklisted, \
+		self.statistics.failed, self.statistics.total])
 		print(x)
 
 
 if __name__ == "__main__":
-	f = FileHandler("/home/fmount/Pictures", "/home/fmount/Pictures/mytest")
+	f = FileHandler("/home/fmount/Pictures", "/home/fmount/Pictures/mytest", "month")
 	for im in f.flist():
 		if not f.blacklisted(im):
 			LOG.debug("[FileHandler] |/ Analyzing image [%s] " % im)
 			cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
-			next_img = ImageObject(im)
+			next_img = ImageObject(im, f.deep)
 			if next_img.reference:
 				LOG.debug("[FileHandler] |/ Building [%s] " % (f.egress + next_img.dpath))
 				cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))
