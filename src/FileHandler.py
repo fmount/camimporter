@@ -28,15 +28,20 @@ class FileHandler(object):
 	
 
 	def __init__(self, ingress, egress, deep, data):
-	
 		try:
+			if(ingress.startswith("~/")):
+				ingress = os.path.expanduser(ingress)
+			
+			if(egress.startswith("~/")):
+				egress = os.path.expanduser(egress)
+				
 			if(os.path.exists(ingress)):
 				self.ingress = ingress
 				LOG.debug("[FileHandler] |/ Import base dir: [%s]" % self.ingress)
 				cc.s_success("[FileHandler] ", "|/ Import base dir: [%s]" % self.ingress)
 			else:
-				LOG.debug("[FileHandler] |x Base in mountpoint [%s] doesn't exists")
-				cc.s_error("[FileHandler] |x Base in mountpoint [%s] doesn't exists")
+				LOG.debug("[FileHandler] |x Base in mountpoint [%s] doesn't exists" % self.ingress)
+				cc.s_error("[FileHandler] |x Base in mountpoint [%s] doesn't exists" % self.ingress)
 		except Exception as e:
 			cc.s_error(e)
 			sys.exit(-1)
@@ -44,6 +49,7 @@ class FileHandler(object):
 		self.egress = egress
 		self.blacklist = []
 		self.deep = deep
+		
 		if self.isinside(self.ingress, self.egress):
 			self.blacklist.append(self.egress)
 		
@@ -115,7 +121,6 @@ class FileHandler(object):
 		It generates a prettytable containing the
 		stats about the imported images
 		'''
-		#x = PrettyTable(['Total Images', 'Transferred', 'Skipped', 'blacklisted'])
 		x = PrettyTable(self.statistics.get_header())
 		x.add_row([self.statistics.transferred, \
 		self.statistics.skipped, self.statistics.blacklisted, \
