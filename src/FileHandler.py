@@ -19,15 +19,18 @@ from collections import defaultdict
 logging.basicConfig(filename='/tmp/exifimporter.log', level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
 
-cc = colorize()
 
-#data = ["transferred", "skipped", "blacklisted", "failed", "total"]
+
+cc = colorize()
 
 
 class FileHandler(object):
 	
 
-	def __init__(self, ingress, egress, deep, data):
+	def __init__(self, ingress, egress, deep, data, dry_run=False, debug=True):
+		
+		LOG.propagate = debug
+		
 		try:
 			if(ingress.startswith("~/")):
 				ingress = os.path.expanduser(ingress)
@@ -38,24 +41,24 @@ class FileHandler(object):
 			if(os.path.exists(ingress)):
 				self.ingress = ingress
 				LOG.debug("[FileHandler] |/ Import base dir: [%s]" % self.ingress)
-				cc.s_success("[FileHandler] ", "|/ Import base dir: [%s]" % self.ingress)
+				#cc.s_success("[FileHandler] ", "|/ Import base dir: [%s]" % self.ingress)
 			else:
 				LOG.debug("[FileHandler] |x Base in mountpoint [%s] doesn't exists" % self.ingress)
-				cc.s_error("[FileHandler] |x Base in mountpoint [%s] doesn't exists" % self.ingress)
+				#cc.s_error("[FileHandler] |x Base in mountpoint [%s] doesn't exists" % self.ingress)
 		except Exception as e:
 			cc.s_error(e)
-			sys.exit(-1)
 
 		self.egress = egress
 		self.blacklist = []
 		self.deep = deep
-		
+		self.dry_run = dry_run
+
 		if self.isinside(self.ingress, self.egress):
 			self.blacklist.append(self.egress)
 		
 		self.statistics = Stats(data)
 		LOG.debug("[FileHandler] |/ Defining base output mountpoint as [%s] " % self.egress)
-		cc.s_success("[FileHandler] |/ Defining base output mountpoint as [%s] " % self.egress)
+		#cc.s_success("[FileHandler] |/ Defining base output mountpoint as [%s] " % self.egress)
 	
 
 	def isinside(self, path, directory):
@@ -78,38 +81,47 @@ class FileHandler(object):
 	def os_dest_path(self, dpath):
 		if not os.path.exists(self.egress + dpath):
 			LOG.debug("[FileHandler] |/ Creating destination point: %s" % self.egress + dpath)
-			cc.s_success("[FileHandler] ", "|/ Creating destination point: %s" % self.egress + dpath)
+			#cc.s_success("[FileHandler] ", "|/ Creating destination point: %s" % self.egress + dpath)
 			os.makedirs(self.egress + dpath)
 		else:
 			LOG.warning("[FileHandler] |x Skipping creation path: it exists")
-			cc.s_warning("[FileHandler] |x Skipping creation path: it exists")
+			#cc.s_warning("[FileHandler] |x Skipping creation path: it exists")
 
 
 	def transfer(self, data, dpath):
+		'''
+		@data is the src path of the image to transfer
+		@dpath is the destination path in which we need to put the image
+		'''
 		try:
-
-			if not os.path.exists(self.egress + dpath + data):
-				LOG.debug("[FileHandler] |/ [%s] => [%s]" % (data, self.egress + dpath))
-				cc.s_success("[FileHandler] ", " |/ [%s] => [%s]" % (data, self.egress + dpath))
+			print(self.egress + dpath + data.split("/")[-1])
+			print(os.path.exists(self.egress + dpath + data.split("/")[-1]))
+			if not os.path.exists(self.egress + dpath + data.split("/")[-1]):
+				LOG.debug("[FileHandler (DRY_RUN: %s)] |/ [%s] => [%s]" % (str(self.dry_run), data, self.egress + dpath))
+				#cc.s_success("[FileHandler (DRY_RUN: %s)] ", " |/ [%s] => [%s]" % (str(self.dry_run), data, self.egress + dpath))
 				try:
-					shutil.copy2(data, self.egress + dpath)
-					self.statistics.transferred += 1
+					if self.dry_run is False:
+						cc.s_success("[FileHandler] ", "|/ Tranferring %s" % data)
+						shutil.copy2(data, (self.egress + dpath))
+						self.statistics.transferred += 1
 				except Exception:
-					LOG.s_error("[FileHandler] |x Error transferring [%s] " % (self.egress + dpath + data))
-					cc.s_error("[FileHandler] |x Error transferring [%s] " % (self.egress + dpath + data))
+					LOG.s_error("[FileHandler] |x Error transferring [%s] " % (data))
+					#cc.s_error("[FileHandler] |x Error transferring [%s] " % (data))
 					self.statistics.failed += 1
 			else:
-				LOG.warning("[FileHandler] |x Skipping [%s]: File exists" % (self.egress + dpath + data))
-				cc.s_warning("[FileHandler] |x Skipping [%s]: File exists" % (self.egress + dpath + data))
+				LOG.warning("[FileHandler] |x Skipping [%s]: File exists" % (data.split("/")[-1]))
+				cc.s_warning("[FileHandler] |x Skipping [%s]: File exists" % (data.split("/")[-1]))
 				self.statistics.skipped += 1
 
 		except Exception as e:
-			cc.errors(e)
+			LOG.error("[FileHandler] Transfer Failed %s " % e)
+			#cc.s_error(e)
 
 
 	def blacklisted(self, img):
 		for p in self.blacklist:
 			if img.startswith(os.path.abspath(p)):
+				#cc.s_success("[FileHandler] ", " |x Blacklisting image [%s]" % img)
 				self.statistics.blacklisted += 1
 				return True
 		return False
@@ -122,9 +134,9 @@ class FileHandler(object):
 		stats about the imported images
 		'''
 		x = PrettyTable(self.statistics.get_header())
-		x.add_row([self.statistics.transferred, \
-		self.statistics.skipped, self.statistics.blacklisted, \
-		self.statistics.failed, self.statistics.total])
+		x.add_row([self.statistics.total, \
+		self.statistics.failed, self.statistics.skipped, \
+		self.statistics.transferred, self.statistics.blacklisted])
 		print(x)
 
 
@@ -133,17 +145,17 @@ if __name__ == "__main__":
 	for im in f.flist():
 		if not f.blacklisted(im):
 			LOG.debug("[FileHandler] |/ Analyzing image [%s] " % im)
-			cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
+			#cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
 			next_img = ImageObject(im, f.deep)
 			if next_img.reference:
 				LOG.debug("[FileHandler] |/ Building [%s] " % (f.egress + next_img.dpath))
-				cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))
+				#cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))
 				f.os_dest_path(next_img.dpath)
 				#print("[FileHandler] |/ Processing Image [%s] " % im)
 			else:
 				LOG.warning("[FileHandler] |x Skipping file [%s] " % im)
-				cc.s_warning("[FileHandler] |x Skipping file [%s] " % im)
+				#cc.s_warning("[FileHandler] |x Skipping file [%s] " % im)
 		else:
 			LOG.error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
-			cc.s_error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
+			#cc.s_error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
 	f.stats()

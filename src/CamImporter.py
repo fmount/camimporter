@@ -18,6 +18,8 @@ from utils.ConsoleUtils import ANSIColors as colorize
 logging.basicConfig(filename='/tmp/exifimporter.log', level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
 
+LOG.propagate = False
+
 cc = colorize()
 
 
@@ -26,10 +28,10 @@ class CameraImporter(Parser):
 
 	def __init__(self):
 		super(CameraImporter, self).__init__(config.parameters_json_file_source)
+		self.parse()
 
 	def parse(self):
 		self.configure = self.raw_json
-		print(self.configure['globals'])
 		# Build the global attributes
 		for key, value in self.configure.get("globals").items():
 			setattr(self, key, value)
@@ -45,29 +47,30 @@ class CameraImporter(Parser):
 
 	def import_objects(self):
 		try:
-			f = FileHandler(self.ingress, self.egress, self.deep, self.configure['statistics']['header'])
+			f = FileHandler(self.ingress, self.egress, self.deep, \
+							self.configure['statistics']['header'], False)
 			for im in f.flist():
 				if not f.blacklisted(im):
 					LOG.debug("[FileHandler] |/ Analyzing image [%s] " % im)
-					cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
+					#cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
 					next_img = ImageObject(im, f.deep)
 					if next_img.reference:
 						LOG.debug("[FileHandler] |/ Building [%s] " % (f.egress + next_img.dpath))
-						cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))
+						#cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))
 						f.os_dest_path(next_img.dpath)
-						#print("[FileHandler] |/ Processing Image [%s] " % im)
+						f.transfer(next_img.ingress, next_img.dpath)
 					else:
 						LOG.warning("[FileHandler] |x Skipping file [%s] " % im)
-						cc.s_warning("[FileHandler] |x Skipping file [%s] " % im)
+						#cc.s_warning("[FileHandler] |x Skipping file [%s] " % im)
 				else:
 					LOG.error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
-					cc.s_error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
+					#cc.s_error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
 			f.stats()
 		except Exception as e:
-		#TODO: Raise the correct exception...
+			#TODO: Raise the correct exception...
+			LOG.error(e)
 			print(e)
 
 if __name__ == "__main__":
 	c = CameraImporter()
-	c.parse()
 	c.import_objects()
