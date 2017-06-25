@@ -18,15 +18,16 @@ from utils.ConsoleUtils import ANSIColors as colorize
 logging.basicConfig(filename='/tmp/exifimporter.log', level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
 
-LOG.propagate = False
-
 cc = colorize()
 
 
 class CameraImporter(Parser):
 
 
-	def __init__(self):
+	def __init__(self, debug=True):
+		
+		LOG.propagate = debug
+
 		super(CameraImporter, self).__init__(config.parameters_json_file_source)
 		self.parse()
 
@@ -37,6 +38,7 @@ class CameraImporter(Parser):
 			setattr(self, key, value)
 			LOG.debug("[CameraImporter] Acquiring attribute [%s] with default value [%s]" % (key, str(value)))
 	
+
 	def __setattr__(self, key, value):
 		self.__dict__[key] = value
 
@@ -44,27 +46,30 @@ class CameraImporter(Parser):
 	def instlookup(self, name):
 		True if name in self.__dict__.keys() else False
 
-
+	
 	def import_objects(self):
 		try:
+			
 			f = FileHandler(self.ingress, self.egress, self.deep, \
-							self.configure['statistics']['header'], False)
+							self.configure['statistics']['header'], self.retry, False, True)
 			for im in f.flist():
 				if not f.blacklisted(im):
 					LOG.debug("[FileHandler] |/ Analyzing image [%s] " % im)
-					#cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
+					cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
 					next_img = ImageObject(im, f.deep)
 					if next_img.reference:
 						LOG.debug("[FileHandler] |/ Building [%s] " % (f.egress + next_img.dpath))
-						#cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))
+						cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))
 						f.os_dest_path(next_img.dpath)
 						f.transfer(next_img.ingress, next_img.dpath)
 					else:
 						LOG.warning("[FileHandler] |x Skipping file [%s] " % im)
-						#cc.s_warning("[FileHandler] |x Skipping file [%s] " % im)
+						cc.s_warning("[FileHandler] |x Skipping file [%s] " % im)
+						f.add_manually(im)
 				else:
 					LOG.error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
-					#cc.s_error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
+					cc.s_error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
+					f.add_manually(im)
 			f.stats()
 		except Exception as e:
 			#TODO: Raise the correct exception...

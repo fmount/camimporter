@@ -21,6 +21,9 @@ class ImageHandler(object):
 
 	def __init__(self, path, deep, debug=True):
 		# Check path and select image type / destination
+		
+		LOG.propagate = debug
+
 		self.ingress = path
 
 		self.deep = self.deep(deep)
@@ -50,7 +53,7 @@ class ImageHandler(object):
 		self.basename = self.basename()
 
 		if self.format is 'PNG' or info is None:
-			LOG.debug("|-> [ImageHandler] Cannot process [%s], do it manually" % self.basename)
+			#LOG.debug("|-> [ImageHandler] Cannot process [%s], do it manually" % self.basename)
 			cc.s_error("|-> [ImageHandler] Cannot process [%s], do it manually" % self.basename)
 			return False
 

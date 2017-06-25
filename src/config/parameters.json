@@ -2,6 +2,7 @@
 	"globals": {
 		"ingress": "~/Pictures",
         "egress": "~/Pictures/mytest",
+		"retry": "~/Pictures/site.retry",
         "deep": "month"
 	},
 	"statistics": {
