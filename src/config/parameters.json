@@ -2,7 +2,7 @@
 	"globals": {
 		"ingress": "~/Pictures",
         "egress": "~/Pictures/mytest",
-		"retry": "~/Pictures/site.retry",
+		"retry": "/tmp/site.retry",
         "deep": "month"
 	},
 	"statistics": {
@@ -11,7 +11,23 @@
 				"skipped",
 				"blacklisted",
 				"failed",
-				"total"
+				"total",
+				"manually"
+		]
+	},
+	"format": {
+		"allowed": [
+				"jpg",
+				"jpeg",
+				"png",
+				"raw"
+		],
+		"excluded": [
+				"mp4",
+				"avi",
+				"jpg_",
+				"png_",
+				"rar"
 		]
 	}
 }

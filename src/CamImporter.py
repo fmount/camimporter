@@ -37,7 +37,9 @@ class CameraImporter(Parser):
 		for key, value in self.configure.get("globals").items():
 			setattr(self, key, value)
 			LOG.debug("[CameraImporter] Acquiring attribute [%s] with default value [%s]" % (key, str(value)))
-	
+		
+		self.allowed = self.configure["format"]["allowed"]
+		self.excluded = self.configure["format"]["excluded"]
 
 	def __setattr__(self, key, value):
 		self.__dict__[key] = value
@@ -52,11 +54,11 @@ class CameraImporter(Parser):
 			
 			f = FileHandler(self.ingress, self.egress, self.deep, \
 							self.configure['statistics']['header'], self.retry, False, True)
-			for im in f.flist():
+			for im in f.flist(self.excluded):
 				if not f.blacklisted(im):
 					LOG.debug("[FileHandler] |/ Analyzing image [%s] " % im)
 					cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
-					next_img = ImageObject(im, f.deep)
+					next_img = ImageObject(im, f.deep, self.allowed)
 					if next_img.reference:
 						LOG.debug("[FileHandler] |/ Building [%s] " % (f.egress + next_img.dpath))
 						cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))

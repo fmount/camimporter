@@ -56,6 +56,10 @@ class FileHandler(object):
 		self.blacklist = []
 		self.deep = deep
 		self.dry_run = dry_run
+		# Clean retry file if it exists
+		if os.path.exists(retry):
+			with open(retry, "w") as f:
+				f.write("")
 		self.retry = retry
 		if self.isinside(self.ingress, self.egress):
 			self.blacklist.append(self.egress)
@@ -72,12 +76,12 @@ class FileHandler(object):
 		return not relative.startswith(os.pardir + os.sep)
 
 
-	def flist(self):
+	def flist(self, excluded):
 		
 		tlist = [root + os.sep + fname	\
 		for root, innerdirs, filelist in os.walk(self.ingress, topdown=True)\
-		for fname in filelist]
-		
+		for fname in filelist if fname.split(".")[-1] not in excluded]
+		print tlist
 		self.statistics.total = len(tlist)
 		return tlist
 		
@@ -92,12 +96,6 @@ class FileHandler(object):
 			cc.s_warning("[FileHandler] |x Skipping creation path: it exists")
 
 	
-	def is_image(self, pimg):
-		allow = "png|jpg|jpeg"
-		regex = re.compile(allow)
-		True if regex.search(pimg.split(".")[-1]) is not None else False
-
-
 	def add_manually(self, image):
 		with open(self.retry, 'a') as f:
 			f.write(image + "\n")
@@ -148,29 +146,36 @@ class FileHandler(object):
 		stats about the imported images
 		'''
 		x = PrettyTable(self.statistics.get_header())
-		x.add_row([self.statistics.total, \
-		self.statistics.failed, self.statistics.skipped, \
-		self.statistics.transferred, self.statistics.blacklisted])
+		#x.add_row([self.statistics.total, \
+		#self.statistics.failed, self.statistics.skipped, \
+		#self.statistics.transferred, self.statistics.blacklisted, 0])
+		x.add_row([self.statistics.skipped, self.statistics.blacklisted, \
+					self.statistics.manually_move(self.retry), \
+					self.statistics.transferred, \
+					self.statistics.failed, \
+					self.statistics.total])
+
+		cc.s_success("=======\nSummary\n=======")
 		print(x)
 
-
 if __name__ == "__main__":
-	f = FileHandler("/home/fmount/Pictures", "/home/fmount/Pictures/mytest", "month")
-	for im in f.flist():
-		if not f.blacklisted(im):
-			LOG.debug("[FileHandler] |/ Analyzing image [%s] " % im)
-			cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
-			next_img = ImageObject(im, f.deep)
-			if next_img.reference:
-				LOG.debug("[FileHandler] |/ Building [%s] " % (f.egress + next_img.dpath))
-				cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))
-				f.os_dest_path(next_img.dpath)
-				#print("[FileHandler] |/ Processing Image [%s] " % im)
-			else:
-				LOG.warning("[FileHandler] |x Skipping file [%s] " % im)
-				f.statistics.skipped += 1
-				cc.s_warning("[FileHandler] |x Skipping file [%s] " % im)
-		else:
-			LOG.error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
-			cc.s_error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
-	f.stats()
+	pass
+#	f = FileHandler("/home/fmount/Pictures", "/home/fmount/Pictures/mytest", "month")
+#	for im in f.flist():
+#		if not f.blacklisted(im):
+#			LOG.debug("[FileHandler] |/ Analyzing image [%s] " % im)
+#			cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
+#			next_img = ImageObject(im, f.deep)
+#			if next_img.reference:
+#				LOG.debug("[FileHandler] |/ Building [%s] " % (f.egress + next_img.dpath))
+#				cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))
+#				f.os_dest_path(next_img.dpath)
+#				#print("[FileHandler] |/ Processing Image [%s] " % im)
+#			else:
+#				LOG.warning("[FileHandler] |x Skipping file [%s] " % im)
+#				f.statistics.skipped += 1
+#				cc.s_warning("[FileHandler] |x Skipping file [%s] " % im)
+#		else:
+#			LOG.error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
+#			cc.s_error("[FileHandler] |x Skipping file [%s] => BLACKLISTED " % im)
+#	f.stats()

@@ -19,15 +19,15 @@ group_by = ["year", "month", "day"]
 class ImageHandler(object):
 
 
-	def __init__(self, path, deep, debug=True):
+	def __init__(self, path, deep, allowed, debug=True):
 		# Check path and select image type / destination
 		
 		LOG.propagate = debug
 
 		self.ingress = path
-
+		self.allowed = allowed
 		self.deep = self.deep(deep)
-		self.reference = self.init_image()
+		self.reference = self.init_image(self.ingress)
 
 	#TODO: Make this part more elegant
 	#self.deep = filter(lambda x, y: True if x == y else False, group_by)
@@ -38,35 +38,41 @@ class ImageHandler(object):
 		return group_by[2]
 
 
-	def init_image(self):
+	def is_allowed(self, ext):
+		return True if ext in self.allowed else False
+
+
+	def init_image(self, ingress):
+		
 		self.meta = {}
 		'''
 		Populate image metadata using exiftools
+		only if the ext is allowed
 		'''
-		try:
-			img = Image.open(self.ingress)
-			info = img._getexif()
-		except Exception:
-			return False
+		if self.is_allowed(ingress.split(".")[-1]):
+			try:
+				img = Image.open(self.ingress)
+				info = img._getexif()
+			except Exception:
+				return False
 
-		self.format = img.format
-		self.basename = self.basename()
+			self.format = img.format
+			self.basename = self.basename()
 
-		if self.format is 'PNG' or info is None:
-			#LOG.debug("|-> [ImageHandler] Cannot process [%s], do it manually" % self.basename)
-			cc.s_error("|-> [ImageHandler] Cannot process [%s], do it manually" % self.basename)
-			return False
+			if self.format is 'PNG' or info is None:
+				#LOG.debug("|-> [ImageHandler] Cannot process [%s], do it manually" % self.basename)
+				cc.s_error("|-> [ImageHandler] Cannot process [%s], do it manually" % self.basename)
+				return False
 
-		# Exif Section to build properties
-		for (tag, value) in info.items():
-			decoded = TAGS.get(tag, tag)
-			self.meta[decoded] = value
+			# Exif Section to build properties
+			for (tag, value) in info.items():
+				decoded = TAGS.get(tag, tag)
+				self.meta[decoded] = value
 
-		self.dpath = self.gen_destination_path()
+			self.dpath = self.gen_destination_path()
 
-		#pp = pprint.PrettyPrinter(indent=4)
-		#pp.pprint(self.meta)
-		return True
+			return True
+		return False
 
 	def basename(self):
 		ptmp = self.ingress.split("/")
