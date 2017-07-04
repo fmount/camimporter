@@ -21,6 +21,13 @@ LOG = logging.getLogger(__name__)
 cc = colorize()
 
 
+# TODO:
+# 1. Log to file all transferred files
+# 2. Write a cli and a set of allowe options to interact with this class
+# 3. Add parameter to enable/disable verbose mode
+
+
+
 class CameraImporter(Parser):
 
 
@@ -41,6 +48,7 @@ class CameraImporter(Parser):
 		self.allowed = self.configure["format"]["allowed"]
 		self.excluded = self.configure["format"]["excluded"]
 
+
 	def __setattr__(self, key, value):
 		self.__dict__[key] = value
 
@@ -57,15 +65,15 @@ class CameraImporter(Parser):
 			for im in f.flist(self.excluded):
 				if not f.blacklisted(im):
 					LOG.debug("[FileHandler] |/ Analyzing image [%s] " % im)
-					cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
+					#cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
 					next_img = ImageObject(im, f.deep, self.allowed)
 					if next_img.reference:
 						LOG.debug("[FileHandler] |/ Building [%s] " % (f.egress + next_img.dpath))
-						cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))
+						#cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))
 						f.os_dest_path(next_img.dpath)
 						f.transfer(next_img.ingress, next_img.dpath)
 					else:
-						LOG.warning("[FileHandler] |x Skipping file [%s] " % im)
+						LOG.debug("[FileHandler] |x Skipping file [%s] " % im)
 						cc.s_warning("[FileHandler] |x Skipping file [%s] " % im)
 						f.add_manually(im)
 				else:
