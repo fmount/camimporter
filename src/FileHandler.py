@@ -55,6 +55,8 @@ class FileHandler(object):
 		self.deep = deep
 		self.dry_run = dry_run
 		
+		self.transferred = "transferred.files.recap"
+
 		# Clean retry file if it exists
 		if os.path.exists(retry):
 			with open(retry, "w") as f:
@@ -94,7 +96,13 @@ class FileHandler(object):
 			LOG.debug("[FileHandler] |x Skipping creation path: it exists")
 			#cc.s_warning("[FileHandler] |x Skipping creation path: it exists")
 
-	
+
+	def add_transferred(self, image):
+		with open(self.transferred, 'a') as f:
+			f.write(image + '\n')
+			LOG.debug("[FileHandler] Adding  [%s] to tranferred file " % image)
+
+
 	def add_manually(self, image):
 		with open(self.retry, 'a') as f:
 			f.write(image + "\n")
@@ -116,6 +124,7 @@ class FileHandler(object):
 						cc.s_success("[FileHandler] ", "|/ Tranferring %s" % data)
 						shutil.copy2(data, (self.egress + dpath))
 						self.statistics.transferred += 1
+						#self.add_transferred(data)
 				except Exception:
 					LOG.error("[FileHandler] |x Error transferring [%s] " % (data))
 					cc.s_error("[FileHandler] |x Error transferring [%s] " % (data))
@@ -123,7 +132,7 @@ class FileHandler(object):
 					self.add_manually(data)
 			else:
 				LOG.debug("[FileHandler] |x Skipping [%s]: File exists" % (data.split("/")[-1]))
-				cc.s_warning("[FileHandler] |x Skipping [%s]: File exists" % (data))
+				#cc.s_warning("[FileHandler] |x Skipping [%s]: File exists" % (data))
 				self.statistics.skipped += 1
 
 		except Exception as e:
@@ -135,7 +144,7 @@ class FileHandler(object):
 		for p in self.blacklist:
 			if img.startswith(os.path.abspath(p)):
 				cc.s_warning("[FileHandler] |x Blacklisting image [%s]" % img)
-				#LOG.warning("[FileHandler] ", " |x Blacklisting image [%s]" % img)
+				LOG.warning("[FileHandler]  |x Blacklisting image [%s]" % img)
 				self.statistics.blacklisted += 1
 				return True
 		return False

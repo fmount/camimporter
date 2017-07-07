@@ -22,27 +22,34 @@ cc = colorize()
 
 
 # TODO:
-# 1. Log to file all transferred files
 # 2. Write a cli and a set of allowe options to interact with this class
 # 3. Add parameter to enable/disable verbose mode
-
 
 
 class CameraImporter(Parser):
 
 
-	def __init__(self, debug=True):
+	def __init__(self, ingress=None, egress=None, deep=None, retry=None, debug=True):
 		
 		LOG.propagate = debug
 
 		super(CameraImporter, self).__init__(config.parameters_json_file_source)
+
+		self.ingress = ingress
+		self.egress = egress
+		self.deep = deep
+		self.retry = retry
+
 		self.parse()
+		
 
 	def parse(self):
 		self.configure = self.raw_json
 		# Build the global attributes
 		for key, value in self.configure.get("globals").items():
-			setattr(self, key, value)
+			if getattr(self, key, None) is None:
+				print("SETTING PARAMETER FROM FILE BECAUSE IT DOWN'T EXIST")
+				setattr(self, key, value)
 			LOG.debug("[CameraImporter] Acquiring attribute [%s] with default value [%s]" % (key, str(value)))
 		
 		self.allowed = self.configure["format"]["allowed"]
@@ -86,6 +93,9 @@ class CameraImporter(Parser):
 			LOG.error(e)
 			print(e)
 
-if __name__ == "__main__":
-	c = CameraImporter()
+def cli():
+	c = CameraImporter("~/Pictures", "~/Pictures/fucktest")
 	c.import_objects()
+
+if __name__ == "__main__":
+	cli()
