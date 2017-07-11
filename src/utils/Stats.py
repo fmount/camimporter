@@ -4,6 +4,13 @@
 # author: francesco.pantano@linux.com
 #
 
+########
+#
+# Total files: [total - blacklisted]
+#
+# Total files is also given by: [manually + skipped + transferred + failed - blacklisted]
+#
+#######
 import json
 import sys
 import logging

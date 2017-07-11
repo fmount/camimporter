@@ -29,10 +29,13 @@ cc = colorize()
 class CameraImporter(Parser):
 
 
-	def __init__(self, ingress=None, egress=None, deep=None, retry=None, debug=True):
+	def __init__(self, conf=None, ingress=None, egress=None, \
+				deep=None, retry=None, debug=True):
 		
 		LOG.propagate = debug
-
+		if conf is not None:
+			config.parameters_json_file_source['conf'] = conf
+	
 		super(CameraImporter, self).__init__(config.parameters_json_file_source)
 
 		self.ingress = ingress
@@ -93,9 +96,9 @@ class CameraImporter(Parser):
 			LOG.error(e)
 			print(e)
 
-def cli():
-	c = CameraImporter("~/Pictures", "~/Pictures/fucktest")
-	c.import_objects()
-
-if __name__ == "__main__":
-	cli()
+#def cli():
+#	c = CameraImporter("~/Pictures", "~/Pictures/fucktest")
+#	c.import_objects()
+#
+#if __name__ == "__main__":
+#	cli()
