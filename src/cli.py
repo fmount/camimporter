@@ -5,10 +5,12 @@ import os
 import sys
 import logging
 from CamImporter import CameraImporter
+from utils.ConsoleUtils import ANSIColors as colorize
 
 logging.basicConfig(filename='/tmp/exifimporter.log', level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
 
+cc = colorize()
 
 def loadconfig(*args):
 	return filter((lambda x: x is not None), args)
@@ -23,7 +25,7 @@ def cli():
 	print("CAMERA IMPORT CLI TOOL")
 	print("------------------------------\n")
 
-	parser = optparse.OptionParser('\nusage %prog -i ingress_path -o egress_path -d depth -r path_retry')
+	parser = optparse.OptionParser('\nusage %prog -c config -i ingress_path -o egress_path -d depth -r path_retry')
 	parser.add_option('-i', dest='ingress', type='string', help='path dir that contains a picture list to import')
 	parser.add_option('-o', dest='egress', type='string', help='path dir in which all imported pictures are placed')
 	parser.add_option('-d', dest='depth', type='string', help='type of grouping /by day - by month - by year')
@@ -46,21 +48,14 @@ def cli():
 	else:
 		LOG.propagate = False
 
-	# TODO:
-	# If all parameters are None, verify that config file exists before
-	# instantiate the CameraImporter object ...
-
 	if config is not None:
-		print("You provide a config file, it has priority on the other parameters")
+		cc.s_success("[CLI] ", "|/ Config file provided, ignoring other options")
 		if check_config_path(config):
-			print("RUN CAMERA IMPORTER WITH FILE CONFIG AND IGNORE ALL OTHERS PARAMETERS")
 			c = CameraImporter(config, None, None, None, None, debug)
 			c.import_objects()
 		else:
-			print("[ERROR] Config file: no such file or directory! Exiting ...")
+			LOG.error("[ERROR] Config file: no such file or directory! Exiting ...")
 			sys.exit(-1)
-		#if len(loadconfig(ingress, egress, depth, retry, debug)) == 0:
-		#print("No parameters provided, we need to check the config file")
 	else:
 		print("You provide %s parameters" % (len(loadconfig(ingress, egress, depth, retry, debug))))
 		c = CameraImporter(None, ingress, egress, depth, retry, debug)

@@ -22,9 +22,8 @@ cc = colorize()
 
 
 # TODO:
-# 2. Write a cli and a set of allowe options to interact with this class
-# 3. Add parameter to enable/disable verbose mode
-
+# We have lots of issues related to basename of photos that may contains spaces, symbols or
+# something else, so we need a function to normalize them before starting to analize
 
 class CameraImporter(Parser):
 
@@ -51,7 +50,6 @@ class CameraImporter(Parser):
 		# Build the global attributes
 		for key, value in self.configure.get("globals").items():
 			if getattr(self, key, None) is None:
-				print("SETTING PARAMETER FROM FILE BECAUSE IT DOWN'T EXIST")
 				setattr(self, key, value)
 			LOG.debug("[CameraImporter] Acquiring attribute [%s] with default value [%s]" % (key, str(value)))
 		
@@ -95,10 +93,3 @@ class CameraImporter(Parser):
 			#TODO: Raise the correct exception...
 			LOG.error(e)
 			print(e)
-
-#def cli():
-#	c = CameraImporter("~/Pictures", "~/Pictures/fucktest")
-#	c.import_objects()
-#
-#if __name__ == "__main__":
-#	cli()

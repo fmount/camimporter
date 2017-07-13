@@ -132,7 +132,7 @@ class FileHandler(object):
 					self.add_manually(data)
 			else:
 				LOG.debug("[FileHandler] |x Skipping [%s]: File exists" % (data.split("/")[-1]))
-				#cc.s_warning("[FileHandler] |x Skipping [%s]: File exists" % (data))
+				cc.s_warning("[FileHandler] |x Skipping [%s]: File exists" % (data))
 				self.statistics.skipped += 1
 
 		except Exception as e:
@@ -144,7 +144,7 @@ class FileHandler(object):
 		for p in self.blacklist:
 			if img.startswith(os.path.abspath(p)):
 				cc.s_warning("[FileHandler] |x Blacklisting image [%s]" % img)
-				LOG.warning("[FileHandler]  |x Blacklisting image [%s]" % img)
+				LOG.warning("[FileHandler]	|x Blacklisting image [%s]" % img)
 				self.statistics.blacklisted += 1
 				return True
 		return False

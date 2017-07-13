@@ -1,6 +1,6 @@
 {
 	"globals": {
-		"ingress": "~/Pictures",
+		"ingress": "~/Pictures/bacheca",
         "egress": "~/Pictures/mytest",
 		"retry": "/tmp/site.retry",
         "deep": "month"

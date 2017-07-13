@@ -7,6 +7,7 @@ import os
 import pprint
 import datetime
 import logging
+import unicodedata
 
 logging.basicConfig(filename='/tmp/exifimporter.log', level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
@@ -14,6 +15,19 @@ LOG = logging.getLogger(__name__)
 cc = colorize()
 
 group_by = ["year", "month", "day"]
+months =	{	1: "January", \
+				2: "February", \
+				3: "March", \
+				4: "April", \
+				5: "May", \
+				6: "June", \
+				7: "July", \
+				8: "August", \
+				9: "September", \
+				10: "October", \
+				11: "November", \
+				12: "December"
+			}
 
 
 class ImageHandler(object):
@@ -58,7 +72,7 @@ class ImageHandler(object):
 
 			self.format = img.format
 			self.basename = self.basename()
-
+			
 			if self.format is 'PNG' or info is None:
 				#LOG.debug("|-> [ImageHandler] Cannot process [%s], do it manually" % self.basename)
 				cc.s_error("|-> [ImageHandler] Cannot process [%s], do it manually" % self.basename)
@@ -68,9 +82,16 @@ class ImageHandler(object):
 			for (tag, value) in info.items():
 				decoded = TAGS.get(tag, tag)
 				self.meta[decoded] = value
+				
+			if(self.meta.get("DateTime", None) is None):
+				print("DateTime not present")
+				return False
+
+			if (self.meta["DateTime"].startswith("\x00")):
+				print("DateTime format is not valid!")
+				return False
 
 			self.dpath = self.gen_destination_path()
-
 			return True
 		return False
 
@@ -88,14 +109,15 @@ class ImageHandler(object):
 		return "{ in: " + self.ingress + ", basename: " + self.basename + ", destination: " + self.dpath + " }"
 
 
-	#TODO: Update this function taking care about the defined path depth
 	def gen_destination_path(self):
 		default_format = "%Y:%m:%d %H:%M:%S"
-		d = datetime.datetime.strptime(self.meta['DateTime'], default_format)
+		d = datetime.datetime.strptime(self.meta.get('DateTime', \
+										'0000:00:00 00:00:00').decode('ascii'), \
+										default_format.decode('ascii'))
 		if self.deep == "day":
-			dpath = "/" + "/".join([str(d.year), str(d.month), str(d.day)])
+			dpath = "/" + "/".join([str(d.year), months[d.month], str(d.day)])
 		elif self.deep == "month":
-			dpath = "/" + "/".join([str(d.year), str(d.month)])
+			dpath = "/" + "/".join([str(d.year), months[d.month]])
 		else:
 			dpath = "/" + "/".join([str(d.year)])
 
