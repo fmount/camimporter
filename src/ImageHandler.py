@@ -58,11 +58,17 @@ class ImageHandler(object):
 
 	def init_image(self, ingress):
 		
-		self.meta = {}
 		'''
 		Populate image metadata using exiftools
-		only if the ext is allowed
+		only if the ext is allowed;
+		N.B.
+		Remember that this function make your image
+		pass ONLY if the extention is explicitely 
+		ALLOWED: I block everything is not explicitely
+		allowed.
 		'''
+		self.meta = {}
+
 		if self.is_allowed(ingress.split(".")[-1]):
 			try:
 				img = Image.open(self.ingress)

@@ -64,3 +64,9 @@ def cli():
 
 if __name__ == '__main__':
 	cli()
+
+
+#######################
+#  python cli.py -c config/parameters.json -v
+#  python cli.py -i ~/Pictures/bacheca -o ~/Pictures/mytest -d month -v
+########################

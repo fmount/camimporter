@@ -1,8 +1,8 @@
 {
 	"globals": {
-		"ingress": "~/Pictures/bacheca",
+		"ingress": "~/Pictures/DCIM",
         "egress": "~/Pictures/mytest",
-		"retry": "/tmp/site.retry",
+		"retry": "/tmp/images.retry",
         "deep": "month"
 	},
 	"statistics": {
@@ -17,6 +17,7 @@
 	},
 	"format": {
 		"allowed": [
+				"JPG",
 				"jpg",
 				"jpeg",
 				"png",
