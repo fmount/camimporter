@@ -49,11 +49,14 @@ class Stats(object):
 	
 
 	def manually_move(self, fname):
-		distinct = set()
-		with open(fname, "r") as f:
-			for line in f.readlines():
-				distinct.add(line)
-		return len(distinct)
+		try:
+			distinct = set()
+			with open(fname, "r") as f:
+				for line in f.readlines():
+					distinct.add(line)
+			return len(distinct)
+		except:
+			return 0
 
 
 if __name__ == "__main__":

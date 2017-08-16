@@ -73,11 +73,9 @@ class CameraImporter(Parser):
 			for im in f.flist(self.excluded):
 				if not f.blacklisted(im):
 					LOG.debug("[FileHandler] |/ Analyzing image [%s] " % im)
-					#cc.s_success("[FileHandler] ", "|/ Analyzing image [%s] " % im)
 					next_img = ImageObject(im, f.deep, self.allowed)
 					if next_img.reference:
 						LOG.debug("[FileHandler] |/ Building [%s] " % (f.egress + next_img.dpath))
-						#cc.s_success("[FileHandler] ", "|/ Building [%s] " % (f.egress + next_img.dpath))
 						f.os_dest_path(next_img.dpath)
 						f.transfer(next_img.ingress, next_img.dpath)
 					else:
