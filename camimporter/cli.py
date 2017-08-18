@@ -31,7 +31,7 @@ def cli():
 	parser.add_option('-d', dest='depth', type='string', help='type of grouping /by day - by month - by year')
 	parser.add_option('-r', dest='retry', type='string', help='where store all failed import transactions')
 	parser.add_option('-v', action='store_true', dest='verbosity', help='Print all statement during the algorithm execution')
-	parser.add_option('-c', dest='config', type='string', help='config file to load all default config parameters')
+	parser.add_option('-c', dest='config', type='string', help='config file to load all default config parameters.\n Example file can be found /usr/lib/python2.7/site-packages/camimporter/config/parameters.json')
 
 	(options, args) = parser.parse_args()
 
@@ -57,10 +57,11 @@ def cli():
 			LOG.error("[ERROR] Config file: no such file or directory! Exiting ...")
 			sys.exit(-1)
 	else:
-		print("You provide %s parameters" % (len(loadconfig(ingress, egress, depth, retry, debug))))
-		c = CameraImporter(None, ingress, egress, depth, retry, debug)
-		c.import_objects()
-	
+		#print("You provide %s parameters" % (len(loadconfig(ingress, egress, depth, retry, debug))))
+		#c = CameraImporter(None, ingress, egress, depth, retry, debug)
+		#c.import_objects()
+		parser.print_help()
+
 
 if __name__ == '__main__':
 	cli()
