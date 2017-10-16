@@ -1,0 +1,34 @@
+{
+	"globals": {
+		"ingress": "~/Pictures/CANON/DCIM/100CANON",
+        "egress": "~/Pictures/mytest",
+		"retry": "/tmp/images.retry",
+        "deep": "month"
+	},
+	"statistics": {
+		"header": [
+				"transferred",
+				"skipped",
+				"blacklisted",
+				"failed",
+				"total",
+				"manually"
+		]
+	},
+	"format": {
+		"allowed": [
+				"JPG",
+				"jpg",
+				"jpeg",
+				"png",
+				"raw"
+		],
+		"excluded": [
+				"mp4",
+				"avi",
+				"jpg_",
+				"png_",
+				"rar"
+		]
+	}
+}
