@@ -8,10 +8,10 @@ Summary: camimporter: useful tool to organize your multimedia files
 Name: camimporter
 Version: 0.1
 Release: 1
-License: GPL+
+License: MIT
 Group: Development/Tools
 SOURCE : %{name}-%{version}.tar.gz
-URL: https://github.com/fmount/photo-exif.git
+URL: https://github.com/fmount/camimporter.git
 
 Packager: Francesco Pantano <fmount9@autistici.org>
 Provides: camimporter
