@@ -76,9 +76,11 @@ class Stats(object):
             return 0
 
 
+'''
 if __name__ == "__main__":
     data = ["transferred", "skipped", "blacklisted", "failed", "total"]
     s = Stats(data)
     s.transferred = 0
     print(s)
     print(s.get_header())
+'''

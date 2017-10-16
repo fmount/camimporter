@@ -182,5 +182,8 @@ class FileHandler(object):
 		cc.s_success("=======\nSummary\n=======")
 		print(x)
 
+
+'''
 if __name__ == "__main__":
 	pass
+'''

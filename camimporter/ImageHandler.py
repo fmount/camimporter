@@ -6,17 +6,17 @@
 #       except in compliance with the License.  You may obtain a copy of the License
 #       in the LICENSE file or at
 #
-#    		https://opensource.org/licenses/MIT
+#           https://opensource.org/licenses/MIT
 #
-# 	Unless required by applicable law or agreed to in writing, software
-# 	distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# 	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# 	See the License for the specific language governing permissions and
-# 	limitations under the License.
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
 #
-#	 author: fmount <fmount9@autistici.org>
-#	 version: 0.1
-#	 company: --
+#    author: fmount <fmount9@autistici.org>
+#    version: 0.1
+#    company: --
 #
 #############################################################################
 
@@ -24,6 +24,7 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 from utils.ConsoleUtils import ANSIColors as colorize
 import os
+import six
 import pprint
 import datetime
 import logging
@@ -137,9 +138,14 @@ class ImageHandler(object):
 
     def gen_destination_path(self):
         default_format = "%Y:%m:%d %H:%M:%S"
-        d = datetime.datetime.strptime(self.meta.get('DateTime', \
-                                        '0000:00:00 00:00:00').decode('ascii'), \
+        if(six.PY2):
+            d = datetime.datetime.strptime(self.meta.get('DateTime', \
+                                       '0000:00:00 00:00:00').decode('ascii'), \
                                         default_format.decode('ascii'))
+        else:
+            d = datetime.datetime.strptime(self.meta.get('DateTime', \
+                                            '0000:00:00 00:00:00'), \
+                                            default_format)
         if self.deep == "day":
             dpath = "/" + "/".join([str(d.year), months[d.month], str(d.day)])
         elif self.deep == "month":
@@ -152,8 +158,11 @@ class ImageHandler(object):
             dpath = dpath + "/"
         return dpath
 
+
+'''
 if __name__ == "__main__":
-    img = ImageHandler("/home/fmount/Pictures/IMG_20161001_164347.jpg", "month")
+    img = ImageHandler("~/Pictures/IMG_20161001_164347.jpg", "month")
     #img.basename()
     img.gen_destination_path()
     print(img)
+'''
