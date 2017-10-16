@@ -15,17 +15,18 @@ URL: https://github.com/fmount/camimporter.git
 
 Packager: Francesco Pantano <fmount9@autistici.org>
 Provides: camimporter
-Requires: python2-pillow, python3-pillow, python2-prettytable, python3-prettytable, python2-six,
-python3-six
+Requires: python2-pillow, python3-pillow, python2-prettytable, python3-prettytable, python2-six, python3-six
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 %{summary}
 
+%global debug_package %{nil}
 %prep
 %setup -q
 
+%global debug_package %{nil}
 %build
 # Empty section.
 #python setup.py build
@@ -34,7 +35,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 rm -rf %{buildroot}
 mkdir -p  %{buildroot}
 mkdir -p %{temproot}
-python setup.py install --root=%{temproot}
+python3 setup.py install --root=%{temproot}
 
 # in builddir
 cp -a %{temproot}/* %{buildroot}
@@ -46,46 +47,6 @@ rm -rf %{temproot}
 
 
 %files
-/usr/bin/camimporter
-/usr/lib/python2.7/site-packages/camimporter-0.0.1.dev15-py2.7.egg-info/PKG-INFO
-/usr/lib/python2.7/site-packages/camimporter-0.0.1.dev15-py2.7.egg-info/SOURCES.txt
-/usr/lib/python2.7/site-packages/camimporter-0.0.1.dev15-py2.7.egg-info/dependency_links.txt
-/usr/lib/python2.7/site-packages/camimporter-0.0.1.dev15-py2.7.egg-info/entry_points.txt
-/usr/lib/python2.7/site-packages/camimporter-0.0.1.dev15-py2.7.egg-info/not-zip-safe
-/usr/lib/python2.7/site-packages/camimporter-0.0.1.dev15-py2.7.egg-info/pbr.json
-/usr/lib/python2.7/site-packages/camimporter-0.0.1.dev15-py2.7.egg-info/requires.txt
-/usr/lib/python2.7/site-packages/camimporter-0.0.1.dev15-py2.7.egg-info/top_level.txt
-/usr/lib/python2.7/site-packages/camimporter/CamImporter.py
-/usr/lib/python2.7/site-packages/camimporter/CamImporter.pyc
-/usr/lib/python2.7/site-packages/camimporter/CamImporter.pyo
-/usr/lib/python2.7/site-packages/camimporter/FileHandler.py
-/usr/lib/python2.7/site-packages/camimporter/FileHandler.pyc
-/usr/lib/python2.7/site-packages/camimporter/FileHandler.pyo
-/usr/lib/python2.7/site-packages/camimporter/ImageHandler.py
-/usr/lib/python2.7/site-packages/camimporter/ImageHandler.pyc
-/usr/lib/python2.7/site-packages/camimporter/ImageHandler.pyo
-/usr/lib/python2.7/site-packages/camimporter/__init__.py
-/usr/lib/python2.7/site-packages/camimporter/__init__.pyc
-/usr/lib/python2.7/site-packages/camimporter/__init__.pyo
-/usr/lib/python2.7/site-packages/camimporter/cli.py
-/usr/lib/python2.7/site-packages/camimporter/cli.pyc
-/usr/lib/python2.7/site-packages/camimporter/cli.pyo
-/usr/lib/python2.7/site-packages/camimporter/config.py
-/usr/lib/python2.7/site-packages/camimporter/config.pyc
-/usr/lib/python2.7/site-packages/camimporter/config.pyo
-/usr/lib/python2.7/site-packages/camimporter/config/parameters.json
-/usr/lib/python2.7/site-packages/camimporter/utils/ConsoleUtils.py
-/usr/lib/python2.7/site-packages/camimporter/utils/ConsoleUtils.pyc
-/usr/lib/python2.7/site-packages/camimporter/utils/ConsoleUtils.pyo
-/usr/lib/python2.7/site-packages/camimporter/utils/Stats.py
-/usr/lib/python2.7/site-packages/camimporter/utils/Stats.pyc
-/usr/lib/python2.7/site-packages/camimporter/utils/Stats.pyo
-/usr/lib/python2.7/site-packages/camimporter/utils/__init__.py
-/usr/lib/python2.7/site-packages/camimporter/utils/__init__.pyc
-/usr/lib/python2.7/site-packages/camimporter/utils/__init__.pyo
-/usr/lib/python2.7/site-packages/camimporter/utils/parser.py
-/usr/lib/python2.7/site-packages/camimporter/utils/parser.pyc
-/usr/lib/python2.7/site-packages/camimporter/utils/parser.pyo
 
 %changelog
 * Mon Oct 16 2017 Francesco Pantano <fmount9@autistici.org> 0.1-1

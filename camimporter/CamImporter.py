@@ -84,7 +84,12 @@ class CameraImporter(Parser):
     
     def import_objects(self):
         try:
-            
+            # Check input src exists
+            if( not os.path.exists(os.path.expanduser(self.ingress))):
+                cc.s_error("Input path doesn't exists, please provide a correct base input!")
+                LOG.error("Input path doesn't exists, please provide a correct base input!")
+                sys.exit(-1)
+
             f = FileHandler(self.ingress, self.egress, self.deep, \
                             self.configure['statistics']['header'], self.retry, False, True)
             for im in f.flist(self.excluded):
