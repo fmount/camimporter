@@ -15,7 +15,8 @@ URL: https://github.com/fmount/photo-exif.git
 
 Packager: Francesco Pantano <fmount9@autistici.org>
 Provides: camimporter
-#Requires: package
+Requires: python2-pillow, python3-pillow, python2-prettytable, python3-prettytable, python2-six,
+python3-six
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
