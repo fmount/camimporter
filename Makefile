@@ -10,7 +10,7 @@ clean:
 	@echo Removing build directories
 	rm -rf $(BUILD) $(DIST) $(PKG_NAME_EGG)
 	@echo Removed misc files
-	rm $(AUTHORS) $(CLOG)
+	#rm $(AUTHORS) $(CLOG)
 
 
 pre:
