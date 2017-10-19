@@ -1,4 +1,5 @@
 # Maintainer: Francesco Pantano <fmount9@autistici.org>
+# Contributor: fmount
 
 pkgname=('camimporter')
 pkgver="0.1"

@@ -27,7 +27,7 @@ import logging
 from CamImporter import CameraImporter
 from utils.ConsoleUtils import ANSIColors as colorize
 
-logging.basicConfig(filename='/tmp/exifimporter.log', level=logging.DEBUG)
+logging.basicConfig(filename='exifimporter.log', level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
 
 cc = colorize()
