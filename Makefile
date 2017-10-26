@@ -22,7 +22,7 @@ build:
 	python setup.py sdist
 
 
-install:
+install: pre
 	@echo Installing the camimporter package on the system
 	python setup.py install
 

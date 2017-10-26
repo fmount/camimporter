@@ -1,0 +1,29 @@
+CHANGES
+=======
+
+* [+] Add Archlinux AUR infos and fix logging due to permission issues
+* [+] Add PKGBUILD for Arch
+* [+] Add rpm (tested on fedora 26)
+* [+] Add Py27 stable spec
+* [F] Fix misplaced req in spec file [F] Fix check input in Camera Importer class
+* Fix License in the spec file and the related git remote path
+* [+] Removed unused test main[s] [+] Fix compatib with py2.7
+* [F] Fix missing requirements (pip install -r requirements.txt)
+* [+] Fix indentation (set ts=4, set expandtab, retab!) [+] Add LICENSE and fix headers of py srcs
+* [+] Adding missing elements to spec file
+* [+] Fix gitignore and add config parameters [+] Fix header for each file [+] Improved spec file to build the rpm
+* \* Added spec file to build rpm
+* Add dependencies installation via pip using makefile
+* \* [+] Rename src for packaging reasons \* [+] Add makefile to allow easy build/installation \* [+] Add setup.{py,cfg} and packaging dependencies
+* [F] Fix try/catch control on Stats.py [C] Removed unuseful prints on the CamImporter class
+* [+] Excluded json conf from now (a template is provided) [+] Added some comments
+* [+] Add CamImporter more logging capabilities [+] Add Image month2name conversion [+] Add more functions to cli
+* [+] Add conf parameter to CamImporter to complete the cli handling of this library
+* [+] Add cli to allow users to specify their own parameters [+] Some logging fix on CamImporter and FileHandler
+* [+] Fix vebosity level and debug level
+* [+] Add [allowed] and [excluded] list based on file extension (configurable on parameters.json) [+] Add new Stat header based on manually files remained (to be moved) [+] Add site.retry to track files that need to be moved manually
+* Add retry parameter to populate the file with images that we're not allowed to move
+* Added image transfer in the correct way
+* Check ingress/egress relative path and add them as attributes for CamImporter Class
+* + Parser to get default config parameters + Stats class to handle statistics for all processed files + Logical Split of FileHandler and CamImporter
+* First commit: import some code

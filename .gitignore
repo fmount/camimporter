@@ -2,3 +2,5 @@
 *.vim
 *.EXAMPLE
 *.STANDALONE
+*.egg-info
+build
