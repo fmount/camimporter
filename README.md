@@ -68,20 +68,20 @@ or you can manually install this package using the Makefile provided.
 How it works
 ---
 
-This package provides a cli to run the import
+This package provides a cli to run the import:
 
-usage camimporter -c config -i ingress_path -o egress_path -d depth -r path_retry
+    usage camimporter -c config -i ingress_path -o egress_path -d depth -r path_retry
 
-Options:
-  -h, --help  show this help message and exit
-  -i INGRESS  path dir that contains a picture list to import
-  -o EGRESS   path dir in which all imported pictures are placed
-  -d DEPTH    type of grouping /by day - by month - by year
-  -r RETRY    where store all failed import transactions
-  -v          Print all statement during the algorithm execution
-  -c CONFIG   config file to load all default config parameters.  Example file
-              can be found /usr/lib/python2.7/site-
-              packages/camimporter/config/parameters.json
+    Options:
+      -h, --help  show this help message and exit
+      -i INGRESS  path dir that contains a picture list to import
+      -o EGRESS   path dir in which all imported pictures are placed
+      -d DEPTH    type of grouping /by day - by month - by year
+      -r RETRY    where store all failed import transactions
+      -v          Print all statement during the algorithm execution
+      -c CONFIG   config file to load all default config parameters.  Example file
+                  can be found /usr/lib/python2.7/site-
+                  packages/camimporter/config/parameters.json
 
 
 Note that if you don't install the package, you can simply clone the repo, go inside
