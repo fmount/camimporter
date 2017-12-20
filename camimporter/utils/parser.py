@@ -28,6 +28,7 @@ import abc
 import json
 import logging
 
+
 #@six.add_metaclass(abc.ABCMeta)
 class Parser(object):
 	__metaclass__ = abc.ABCMeta

@@ -36,19 +36,19 @@ LOG = logging.getLogger(__name__)
 cc = colorize()
 
 group_by = ["year", "month", "day"]
-months =    {   1: "January", \
-                2: "February", \
-                3: "March", \
-                4: "April", \
-                5: "May", \
-                6: "June", \
-                7: "July", \
-                8: "August", \
-                9: "September", \
-                10: "October", \
-                11: "November", \
-                12: "December"
-            }
+months = {1: "January", \
+          2: "February", \
+          3: "March", \
+          4: "April", \
+          5: "May", \
+          6: "June", \
+          7: "July", \
+          8: "August", \
+          9: "September", \
+          10: "October", \
+          11: "November", \
+          12: "December"
+        }
 
 
 class ImageHandler(object):
@@ -64,7 +64,7 @@ class ImageHandler(object):
         self.deep = self.deep(deep)
         self.reference = self.init_image(self.ingress)
 
-    #TODO: Make this part more elegant
+    #TODO: Make this part more pythonic
     #self.deep = filter(lambda x, y: True if x == y else False, group_by)
     def deep(self, deep):
         for d in group_by:
