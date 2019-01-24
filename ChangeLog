@@ -1,9 +1,18 @@
 CHANGES
 =======
 
+* [+] Fix README and removed old rpm file
+* [+] Some style fixes
+* [+] Another README fix
+* fix readme
+* [+] Add README [+] Fix author email
 * [+] Add Archlinux AUR infos and fix logging due to permission issues
 * [+] Add PKGBUILD for Arch
 * [+] Add rpm (tested on fedora 26)
+
+v0.1
+----
+
 * [+] Add Py27 stable spec
 * [F] Fix misplaced req in spec file [F] Fix check input in Camera Importer class
 * Fix License in the spec file and the related git remote path
