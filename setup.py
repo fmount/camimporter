@@ -5,9 +5,9 @@ import setuptools
 # setuptools if some other modules registered functions in `atexit`.
 # solution from: http://bugs.python.org/issue15881#msg170215
 try:
-	import multiprocessing	# noqa
+    import multiprocessing	# noqa
 except ImportError:
-	pass
+    pass
 
 setuptools.setup(
-	setup_requires=['pbr>=2.0.0'], pbr=True)
+    setup_requires=['pbr>=2.0.0'], pbr=True)

@@ -10,7 +10,6 @@ url="https://github.com/fmount/${pkgname}.git"
 license=('MIT')
 makedepends=('python2-pillow' 'python2-prettytable' 'python2-six' 'python2-setuptools')
 source=("git://github.com/fmount/camimporter.git")
-#sha1sum=("SKIP")
 md5sums=('SKIP')
 
 build() {
