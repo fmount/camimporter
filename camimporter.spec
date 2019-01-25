@@ -20,7 +20,7 @@ Source: {{{ git_dir_pack }}}
 Packager: Francesco Pantano <fpantano@redhat.com>
 Provides: camimporter
 Requires: python2-pillow, python3-pillow, python-prettytable, python3-prettytable, python2-six, python3-six
-BuildRequires: python3-devel, python-unversioned-command, python-setuptools, python3-pbr, python-pip
+BuildRequires: python3-devel, python-unversioned-command, python-setuptools
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -41,7 +41,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 #rm -rf %{buildroot}
 #mkdir -p  %{buildroot}
 mkdir -p %{temproot}
-cd %{name}-0.1.1.dev8
+cd %{name}-0.1.1.dev16
 python3 setup.py install --root=%{temproot}
 
 # in builddir

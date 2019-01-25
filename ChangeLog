@@ -1,6 +1,14 @@
 CHANGES
 =======
 
+* [=] Styling (ts=4; expandtab; retab) for README
+* [=] Styling stuff for README
+* [=] Merging setup.cfg info
+* [+] Added badges to Readme for copr builds [+] Fix setup.cfg Readme line
+* [+] Fix Spec file to build the package using copr on F29
+* Restore Readme
+* Restore README
+* [+] Fix Spec file to build the package using copr on F29
 * [+] Fix README and removed old rpm file
 * [+] Some style fixes
 * [+] Another README fix

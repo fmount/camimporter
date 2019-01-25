@@ -22,7 +22,7 @@
 
 from PIL import Image
 from PIL.ExifTags import TAGS
-from utils.ConsoleUtils import ANSIColors as colorize
+from .utils.ConsoleUtils import ANSIColors as colorize
 import os
 import six
 import pprint

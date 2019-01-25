@@ -24,8 +24,8 @@ import optparse
 import os
 import sys
 import logging
-from CamImporter import CameraImporter
-from utils.ConsoleUtils import ANSIColors as colorize
+from .CamImporter import CameraImporter
+from .utils.ConsoleUtils import ANSIColors as colorize
 
 logging.basicConfig(filename='exifimporter.log', level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ def cli():
     parser.add_option('-d', dest='depth', type='string', help='type of grouping /by day - by month - by year')
     parser.add_option('-r', dest='retry', type='string', help='where store all failed import transactions')
     parser.add_option('-v', action='store_true', dest='verbosity', help='Print all statement during the algorithm execution')
-    parser.add_option('-c', dest='config', type='string', help='config file to load all default config parameters.\n Example file can be found /usr/lib/python2.7/site-packages/camimporter/config/parameters.json')
+    parser.add_option('-c', dest='config', type='string', help='config file to load all default config parameters.\n Example file can be found /usr/lib/python3.7/site-packages/camimporter/config/parameters.json')
 
     (options, args) = parser.parse_args()
 

@@ -27,9 +27,9 @@ import datetime
 import logging
 import shutil
 import re
-from ImageHandler import ImageHandler as ImageObject
-from utils.ConsoleUtils import ANSIColors as colorize
-from utils.Stats import Stats
+from .ImageHandler import ImageHandler as ImageObject
+from .utils.ConsoleUtils import ANSIColors as colorize
+from .utils.Stats import Stats
 from prettytable import PrettyTable
 from collections import defaultdict
 

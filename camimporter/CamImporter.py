@@ -25,11 +25,11 @@ import os
 import sys
 import datetime
 import logging
-import config
-from FileHandler import FileHandler
-from ImageHandler import ImageHandler as ImageObject
-from utils.parser import Parser as Parser
-from utils.ConsoleUtils import ANSIColors as colorize
+from . import config
+from .FileHandler import FileHandler
+from .ImageHandler import ImageHandler as ImageObject
+from .utils.parser import Parser as Parser
+from .utils.ConsoleUtils import ANSIColors as colorize
 
 
 logging.basicConfig(filename='/tmp/exifimporter.log', level=logging.DEBUG)
