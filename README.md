@@ -1,5 +1,7 @@
 Camera Photo Importer
 =====================
+[![Build Status](https://copr.fedorainfracloud.org/coprs/fmount/photo-importer/package/camimporter/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/fmount/photo-importer/package/camimporter/status_image/last_build.png)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://img.shields.io/badge/license-MIT-yellow.svg)
 
 This is a python utility useful to import photos from your camera.
 The default behavior is defined in a json configuration file and an example
@@ -9,7 +11,7 @@ of policy is like the following:
 	{
 		"globals": {
 			"ingress": "~/Pictures/CANON/DCIM/100CANON",
-			"egress": "~/Pictures/mytest",
+			"egress": "~/Pictures/output",
 			"retry": "/tmp/images.retry",
 			"deep": "month"
 		},
