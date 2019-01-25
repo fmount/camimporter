@@ -1,5 +1,6 @@
 Camera Photo Importer
 =====================
+
 [![Build Status](https://copr.fedorainfracloud.org/coprs/fmount/photo-importer/package/camimporter/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/fmount/photo-importer/package/camimporter/status_image/last_build.png)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://img.shields.io/badge/license-MIT-yellow.svg)
 
